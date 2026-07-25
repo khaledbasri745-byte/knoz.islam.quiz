@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>كنوز الإسلام - المسابقة الكبرى</title>
+    <title>المسابقة الكبرى</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- مكتبات التصدير المستقرة مع es6-promise للتدعيم -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.2.8/es6-promise.auto.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
         :root {
             --primary-color: #0d5c3a;
@@ -51,6 +56,11 @@
         .logo-container {
             margin-top: 20px;
             margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
             text-align: center;
             user-select: none;
         }
@@ -61,20 +71,12 @@
             object-fit: contain;
             border: none;
             box-shadow: none;
-            margin-bottom: 8px;
+            margin: 0 auto 8px auto;
+            display: block;
             transition: transform 0.3s ease;
         }
         .main-logo:hover {
             transform: scale(1.05);
-        }
-
-        .kufi-title {
-            font-family: 'Reem Kufi', sans-serif;
-            font-size: 2.3rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-shadow: 1px 1px 2px rgba(212, 175, 55, 0.3);
-            margin: 0;
         }
 
         .part-indicator {
@@ -88,6 +90,7 @@
             margin-top: 6px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             display: inline-block;
+            text-align: center;
         }
 
         .main-container {
@@ -154,7 +157,6 @@
             padding-right: 8px;
         }
 
-        /* تنسيقات واجهة الأجزاء (Parts Dashboard) */
         .parts-grid {
             display: flex;
             flex-direction: column;
@@ -218,7 +220,6 @@
             color: var(--primary-color);
         }
 
-        /* الخيارات والأزرار */
         .options-container {
             display: flex;
             flex-direction: column;
@@ -485,7 +486,6 @@
             padding: 40px 20px;
         }
 
-        /* العد التنازلي والجدة */
         .countdown-screen {
             display: none;
             text-align: center;
@@ -595,10 +595,8 @@
     <div class="wrapper">
         <div class="content-area">
             
-            <!-- الهيدر الموحد المطور مع اللوجو -->
             <div class="logo-container" id="main-logo-header">
                 <img src="https://lh3.googleusercontent.com/d/1lzBzzmhHYpQRdLe7HV2Dq83UTIqw6K1Z" alt="شعار كنز الإسلام" class="main-logo" id="app-logo">
-                <h1 class="kufi-title">كُنُوزُ الإِسْلَامِ</h1>
                 <div id="part-tag" class="part-indicator">المسابقة الكبرى</div>
             </div>
 
@@ -607,8 +605,8 @@
                 <div class="card">
                     <img src="https://lh3.googleusercontent.com/d/1lxD42MD3uIOXCw9Yb_HQTv2XQglRYLFK" alt="صورة الجدة" class="grandmother-img">
                     <div class="tribute-box">
-                        <div class="tribute-title">إهداء وترحم لروح الجدة الطاهرة رحمها الله</div>
-                        <div class="tribute-date">تاريخ الوفاة: الجمعة 07 أوت 2026</div>
+                        <div class="tribute-title">إهداء وترحم لروح الجدة الطاهرة المرحومة بوداود مباركة</div>
+                        <div class="tribute-date">تاريخ الوفاة: الإثنين 07 أوت 2017</div>
                         <p style="font-size: 1.05rem; margin: 0; line-height: 1.7;">
                             اللهم اغفر لها وارحمها وعافها واعف عنها، وأكرم نزلها ووسع مدخلها واجعل قبرها روضة من رياض الجنة.
                         </p>
@@ -692,7 +690,6 @@
                     </p>
 
                     <div class="parts-grid">
-                        <!-- Part 1 Card -->
                         <div id="card-part-1" class="part-card">
                             <div class="part-header">
                                 <span class="part-name">📖 الجزء الأول: السند الديني</span>
@@ -707,7 +704,6 @@
                             <button id="btn-part-1" class="btn primary-btn" style="margin-bottom:0;" onclick="startSpecificPart(1)">دخول الجزء الأول 🎯</button>
                         </div>
 
-                        <!-- Part 2 Card -->
                         <div id="card-part-2" class="part-card locked">
                             <div class="part-header">
                                 <span class="part-name">❓ الجزء الثاني: الخيارات المباشرة</span>
@@ -722,7 +718,6 @@
                             <button id="btn-part-2" class="btn primary-btn" style="margin-bottom:0;" disabled onclick="startSpecificPart(2)">دخول الجزء الثاني 🎯</button>
                         </div>
 
-                        <!-- Part 3 Card -->
                         <div id="card-part-3" class="part-card locked">
                             <div class="part-header">
                                 <span class="part-name">🧩 الجزء الثالث: الفوازير والألغاز</span>
@@ -883,12 +878,11 @@
                     علماً بأن التسجيل والموقع يغلق رسمياً بتاريخ <b>01 نوفمبر 2026</b>.
                 </div>
 
-                <button class="btn primary-btn" onclick="generatePdfAndEmail()">تحميل تقرير الـ PDF التفصيلي وإرسال النتيجة</button>
+                <button id="download-pdf-btn" class="btn primary-btn" onclick="generatePdfAndEmail()">تحميل تقرير الـ PDF التفصيلي وإرسال النتيجة</button>
             </div>
 
         </div>
 
-        <!-- وسائل الدعم الفني -->
         <div class="support-container">
             <div class="support-title">الاتصال بالدعم الفني للمسابقة</div>
             <div class="support-icons">
@@ -959,7 +953,6 @@
             { type: "text", weight: 1.5, part: 3, question: "فزورة: خلق الله من كل شيء زوجين، إلا شيء واحد خلقه وحيدًا، والله معه؛ فما هو؟", keywords: ["الصبر", "صبر"], officialAnswer: "الصبر." }
         ];
 
-        // متغيّرات الحالة والحفظ
         let activePart = null;
         let activeQuestionsIndices = [];
         let currentQuestionInPartPos = 0;
@@ -970,7 +963,6 @@
         let selectedOptionIdx = null; 
         let detailedResults = [];
 
-        // تتبع حالة الأجزاء الثلاثة
         let partStatus = {
             1: { completed: false, correct: 0, points: 0.0, total: 15 },
             2: { completed: false, correct: 0, points: 0.0, total: 10 },
@@ -980,6 +972,7 @@
         let isQuizFinishedFinished = false; 
         let isQuizStarted = false;
         let timerInterval = null;
+        let isPdfDownloaded = false;
 
         window.onload = function() {
             const now = new Date().getTime();
@@ -1005,7 +998,7 @@
             if (now < OPENING_DATE) {
                 document.getElementById("welcome-screen").style.display = "none";
                 document.getElementById("countdown-screen").style.display = "block";
-                document.getElementById("main-logo-header").style.display = "block";
+                document.getElementById("main-logo-header").style.display = "flex";
                 startCountdown();
             } else {
                 showWelcomeScreen();
@@ -1015,7 +1008,7 @@
         function showWelcomeScreen() {
             document.getElementById("countdown-screen").style.display = "none";
             document.getElementById("welcome-screen").style.display = "block";
-            document.getElementById("main-logo-header").style.display = "block";
+            document.getElementById("main-logo-header").style.display = "flex";
         }
 
         function startCountdown() {
@@ -1054,7 +1047,7 @@
             document.getElementById("welcome-screen").style.display = "none";
             document.getElementById("quiz-screen").style.display = "none";
             document.getElementById("parts-dashboard").style.display = "block";
-            document.getElementById("main-logo-header").style.display = "block";
+            document.getElementById("main-logo-header").style.display = "flex";
             
             document.getElementById("part-tag").innerText = "أجزاء المسابقة الكبرى";
             updateDashboardUI();
@@ -1062,7 +1055,6 @@
         }
 
         function updateDashboardUI() {
-            // تحديث الجزء الأول
             if (partStatus[1].completed) {
                 document.getElementById("card-part-1").className = "part-card completed";
                 document.getElementById("badge-part-1").className = "part-status-badge badge-completed";
@@ -1075,7 +1067,6 @@
             let rate1 = (partStatus[1].correct / 15) * 100;
             document.getElementById("p1-rate").innerText = `${rate1.toFixed(1)}%`;
 
-            // تحديث الجزء الثاني
             if (partStatus[1].completed && !partStatus[2].completed) {
                 document.getElementById("card-part-2").className = "part-card";
                 document.getElementById("badge-part-2").className = "part-status-badge badge-available";
@@ -1093,7 +1084,6 @@
             let rate2 = (partStatus[2].correct / 10) * 100;
             document.getElementById("p2-rate").innerText = `${rate2.toFixed(1)}%`;
 
-            // تحديث الجزء الثالث
             if (partStatus[2].completed && !partStatus[3].completed) {
                 document.getElementById("card-part-3").className = "part-card";
                 document.getElementById("badge-part-3").className = "part-status-badge badge-available";
@@ -1111,7 +1101,6 @@
             let rate3 = (partStatus[3].correct / 10) * 100;
             document.getElementById("p3-rate").innerText = `${rate3.toFixed(1)}%`;
 
-            // إذا تم إكمال جميع الأجزاء
             if (partStatus[1].completed && partStatus[2].completed && partStatus[3].completed) {
                 document.getElementById("finish-all-btn").style.display = "block";
             }
@@ -1134,7 +1123,6 @@
         }
 
         function loadCurrentPartQuestion() {
-            // إخفاء الهيدر مع اللوجو داخل شاشة الأسئلة
             document.getElementById("main-logo-header").style.display = "none";
 
             const globalIndex = activeQuestionsIndices[currentQuestionInPartPos];
@@ -1300,7 +1288,7 @@
                     partStatus[activePart].completed = true;
                     document.getElementById("quiz-screen").style.display = "none";
                     document.getElementById("parts-dashboard").style.display = "block";
-                    document.getElementById("main-logo-header").style.display = "block";
+                    document.getElementById("main-logo-header").style.display = "flex";
                     document.getElementById("part-tag").innerText = "أجزاء المسابقة الكبرى";
                     updateDashboardUI();
                 };
@@ -1332,7 +1320,7 @@
             document.getElementById("quiz-screen").style.display = "none";
             document.getElementById("name-screen").style.display = "none";
             document.getElementById("result-screen").style.display = "none";
-            document.getElementById("main-logo-header").style.display = "block";
+            document.getElementById("main-logo-header").style.display = "flex";
             document.getElementById("blocked-text").innerHTML = message;
             document.getElementById("blocked-screen").style.display = "block";
         }
@@ -1340,7 +1328,7 @@
         function showNameRegistrationScreen() {
             document.getElementById("parts-dashboard").style.display = "none";
             document.getElementById("name-screen").style.display = "block";
-            document.getElementById("main-logo-header").style.display = "block";
+            document.getElementById("main-logo-header").style.display = "flex";
             document.getElementById("part-tag").innerText = "تسجيل بيانات المتسابق";
             document.querySelector('.wrapper').scrollTop = 0;
         }
@@ -1355,7 +1343,7 @@
             isQuizFinishedFinished = true;
             document.getElementById("name-screen").style.display = "none";
             document.getElementById("result-screen").style.display = "block";
-            document.getElementById("main-logo-header").style.display = "block";
+            document.getElementById("main-logo-header").style.display = "flex";
             document.getElementById("part-tag").innerText = "وثيقة النتيجة المعتمدة";
 
             document.getElementById("pdf-name").innerText = nameInput;
@@ -1451,29 +1439,49 @@
         }
 
         function generatePdfAndEmail() {
-            const element = document.getElementById('pdf-content');
-            const participantName = document.getElementById("pdf-name").innerText;
+            const btn = document.getElementById("download-pdf-btn");
+            const participantName = document.getElementById("pdf-name").innerText || "متسابق";
             const securityToken = document.getElementById("pdf-token").innerText;
             const grade = document.getElementById("final-grade").innerText;
             const qualText = document.getElementById("qualification-text").innerText;
+            const emailAddress = "khaled.basri745@gmail.com";
+
+            if (isPdfDownloaded) {
+                const subject = encodeURIComponent(`وثيقة المسابقة المعتمدة للمتسابق: ${participantName}`);
+                const body = encodeURIComponent(`السلام عليكم ورحمة الله وبركاته،\n\nأرفق لكم كشف النقاط والمعدل النهائي الموثق من تطبيق مسابقة كنوز الإسلام:\n\n- اسم المتسابق الكامل: ${participantName}\n- المعدل النهائي الإجمالي: [ ${grade} / 20 ]\n- النقاط المستحقة: ${cumulativePoints.toFixed(1)} من 60\n- حالة التأهل: ${qualText}\n- الرمز الأمني للتوثيق الرقمي: [ ${securityToken} ]\n\n(ملاحظة: وثيقة الـ PDF تم حفظها في جهازي ويسرني إرفاقها لكم).\n\nشكراً لكم.`);
+
+                window.location.href = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "⏳ جاري توليد وثيقة الـ PDF وحفظها...";
+
+            const element = document.getElementById('pdf-content');
 
             const opt = {
-                margin:       [8, 8, 8, 8], 
-                filename:     `نتائج_المسابقة_${participantName}.pdf`,
+                margin:       [5, 5, 5, 5], 
+                filename:     `نتائج_المسابقة_${participantName.replace(/\s+/g, '_')}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(opt).from(element).save();
+            html2pdf().set(opt).from(element).save().then(() => {
+                isPdfDownloaded = true;
+                btn.disabled = false;
+                
+                btn.innerHTML = "📧 إرسال النتيجة عبر البريد الإلكتروني الآن";
+                btn.style.background = "linear-gradient(135deg, #1877F2, #1d4ed8)";
+                btn.style.borderColor = "#1e40af";
 
-            const emailAddress = "khaled.basri745@gmail.com";
-            const subject = encodeURIComponent(`وثيقة المسابقة المعتمدة للمتسابق: ${participantName}`);
-            const body = encodeURIComponent(`السلام عليكم ورحمة الله وبركاته،\n\nأرفق لكم كشف النقاط والمعدل النهائي الموثق من تطبيق مسابقة كنوز الإسلام:\n\n- اسم المتسابق الكامل: ${participantName}\n- المعدل النهائي الإجمالي: [ ${grade} / 20 ]\n- النقاط المستحقة: ${cumulativePoints.toFixed(1)} من 60\n- حالة التأهل: ${qualText}\n- الرمز الأمني للتوثيق الرقمي: [ ${securityToken} ]\n\n(ملاحظة: وثيقة الـ PDF تم حفظها في جهازي، وتم تحويل النتيجة والرمز للمراجعة).\n\nشكراً لكم.`);
-
-            setTimeout(() => {
-                window.location.href = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
-            }, 1200);
+                alert("تم تحميل وثيقة الـ PDF بنجاح على جهازك! اضغط الآن على زر إرسال النتيجة للتواصل عبر البريد.");
+            }).catch(err => {
+                console.error("PDF generation error:", err);
+                alert("حدث خطأ أثناء تحميل الملف، يرجى إعادة المحاولة.");
+                btn.disabled = false;
+                btn.innerText = "تحميل تقرير الـ PDF التفصيلي وإرسال النتيجة";
+            });
         }
     </script>
 </body>
