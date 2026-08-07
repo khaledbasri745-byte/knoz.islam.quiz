@@ -157,64 +157,94 @@
             padding-right: 8px;
         }
 
+        /* --- تحسين واجهة الأجزاء (Dashboard) لتكون احترافية --- */
+        .dashboard-header-card {
+            background: linear-gradient(135deg, #0d5c3a, #116631);
+            color: #ffffff;
+            border-top: 5px solid var(--gold-color);
+            border-bottom: 3px solid var(--gold-color);
+            text-align: center;
+            padding: 20px;
+        }
+        .dashboard-header-card .card-title {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
         .parts-grid {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 18px;
             margin-top: 15px;
         }
         .part-card {
             background: #ffffff;
-            border: 2px solid #a7f3d0;
-            border-radius: 12px;
-            padding: 18px;
+            border: 2px solid #bbf7d0;
+            border-radius: 14px;
+            padding: 20px;
             position: relative;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(13, 92, 58, 0.05);
+        }
+        .part-card:hover:not(.locked) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(13, 92, 58, 0.12);
+            border-color: var(--primary-color);
         }
         .part-card.locked {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-            opacity: 0.75;
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            opacity: 0.8;
         }
         .part-card.completed {
             background: #f0fdf4;
-            border-color: #86efac;
+            border-color: #4ade80;
+            border-right: 6px solid #15803d;
         }
         .part-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .part-name {
             font-family: 'Reem Kufi', sans-serif;
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: var(--primary-color);
         }
+        .part-card.locked .part-name {
+            color: #64748b;
+        }
         .part-status-badge {
             font-size: 0.85rem;
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-weight: bold;
+            letter-spacing: 0.5px;
         }
-        .badge-locked { background: #e2e8f0; color: #475569; }
-        .badge-available { background: #dcfce7; color: #15803d; }
-        .badge-completed { background: #dbeafe; color: #1e40af; }
+        .badge-locked { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+        .badge-available { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .badge-completed { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
 
         .part-stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            background: rgba(255,255,255,0.7);
-            padding: 10px;
-            border-radius: 8px;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 10px;
             font-size: 0.95rem;
-            margin-bottom: 12px;
-            border: 1px dashed #a7f3d0;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+        }
+        .part-card.completed .part-stats {
+            background: #ffffff;
+            border-color: #bbf7d0;
         }
         .stat-item {
-            color: #334155;
+            color: #475569;
         }
         .stat-item b {
             color: var(--primary-color);
@@ -299,6 +329,7 @@
             border-color: #94a3b8 !important;
             color: #64748b !important;
             cursor: not-allowed;
+            opacity: 0.7;
         }
         .primary-btn { 
             background: linear-gradient(135deg, var(--primary-color), #15803d);
@@ -640,7 +671,7 @@
                 </div>
             </div>
 
-            <!-- 2. شاشة الشروط والقوانين -->
+            <!-- 2. شاشة الشروط والقوانين (تظهر مرة واحدة فقط) -->
             <div id="welcome-screen" class="main-container" style="display: none;">
                 <div class="prize-badge">
                     <i class="fas fa-trophy"></i> الفائز الأول يحصل على جائزة قيمة!
@@ -675,68 +706,66 @@
                         <li>يجب تحميل نتيجة الـ PDF وإرسالها عبر البريد لاعتماد النتيجة.</li>
                     </ol>
 
-                    <button class="btn primary-btn" style="margin-top: 15px; font-size: 1.3rem;" onclick="goToDashboard()">ابدأ المسابقة الآن 🚀</button>
+                    <button class="btn primary-btn" style="margin-top: 15px; font-size: 1.3rem;" onclick="acceptRulesAndProceed()">ابدأ المسابقة الآن 🚀</button>
                 </div>
             </div>
 
-            <!-- 3. واجهة الأجزاء (Dashboard) -->
+            <!-- 3. واجهة الأجزاء (Dashboard) المطورة والمنظمة -->
             <div id="parts-dashboard" class="main-container" style="display: none;">
-                <div class="card">
-                    <div class="card-title" style="text-align: center; border-bottom: 2px solid var(--gold-color); padding-bottom: 8px;">
-                        🗺️ أجزاء المسابقة الكبرى
-                    </div>
-                    <p class="card-text" style="font-size: 1.05rem; text-align: center;">
-                        أتمم الأجزاء بالترتيب التسلسلي. يفتح كل جزء تلقائياً بعد إتمام الجزء السابق بنجاح.
+                <div class="card dashboard-header-card">
+                    <div class="card-title">🗺️ لوحة تحكم أجزاء المسابقة</div>
+                    <p class="card-text" style="font-size: 1.05rem; color: #f0fdf4; margin: 0;">
+                        أتمم الأجزاء بالتسلسل. يتم حفظ تقدمك تلقائياً في الكاش لتعود من حيث أبدیت متى شئت.
                     </p>
+                </div>
 
-                    <div class="parts-grid">
-                        <div id="card-part-1" class="part-card">
-                            <div class="part-header">
-                                <span class="part-name">📖 الجزء الأول: السند الديني</span>
-                                <span id="badge-part-1" class="part-status-badge badge-available">متاح للبدء</span>
-                            </div>
-                            <div class="part-stats">
-                                <div class="stat-item">عدد الأسئلة: <b>15</b></div>
-                                <div class="stat-item">إجابات صحيحة: <b id="p1-correct">0 / 15</b></div>
-                                <div class="stat-item">النقاط: <b id="p1-points">0.0 / 30</b></div>
-                                <div class="stat-item">معدل الجزء: <b id="p1-rate">0%</b></div>
-                            </div>
-                            <button id="btn-part-1" class="btn primary-btn" style="margin-bottom:0;" onclick="startSpecificPart(1)">دخول الجزء الأول 🎯</button>
+                <div class="parts-grid">
+                    <div id="card-part-1" class="part-card">
+                        <div class="part-header">
+                            <span class="part-name">📖 الجزء الأول: السند الديني</span>
+                            <span id="badge-part-1" class="part-status-badge badge-available">متاح للبدء</span>
                         </div>
-
-                        <div id="card-part-2" class="part-card locked">
-                            <div class="part-header">
-                                <span class="part-name">❓ الجزء الثاني: الخيارات المباشرة</span>
-                                <span id="badge-part-2" class="part-status-badge badge-locked">🔒 مغلق</span>
-                            </div>
-                            <div class="part-stats">
-                                <div class="stat-item">عدد الأسئلة: <b>10</b></div>
-                                <div class="stat-item">إجابات صحيحة: <b id="p2-correct">0 / 10</b></div>
-                                <div class="stat-item">النقاط: <b id="p2-points">0.0 / 15</b></div>
-                                <div class="stat-item">معدل الجزء: <b id="p2-rate">0%</b></div>
-                            </div>
-                            <button id="btn-part-2" class="btn primary-btn" style="margin-bottom:0;" disabled onclick="startSpecificPart(2)">دخول الجزء الثاني 🎯</button>
+                        <div class="part-stats">
+                            <div class="stat-item">عدد الأسئلة: <b>15</b></div>
+                            <div class="stat-item">إجابات صحيحة: <b id="p1-correct">0 / 15</b></div>
+                            <div class="stat-item">النقاط: <b id="p1-points">0.0 / 30</b></div>
+                            <div class="stat-item">معدل الجزء: <b id="p1-rate">0%</b></div>
                         </div>
-
-                        <div id="card-part-3" class="part-card locked">
-                            <div class="part-header">
-                                <span class="part-name">🧩 الجزء الثالث: الفوازير والألغاز</span>
-                                <span id="badge-part-3" class="part-status-badge badge-locked">🔒 مغلق</span>
-                            </div>
-                            <div class="part-stats">
-                                <div class="stat-item">عدد الأسئلة: <b>10</b></div>
-                                <div class="stat-item">إجابات صحيحة: <b id="p3-correct">0 / 10</b></div>
-                                <div class="stat-item">النقاط: <b id="p3-points">0.0 / 15</b></div>
-                                <div class="stat-item">معدل الجزء: <b id="p3-rate">0%</b></div>
-                            </div>
-                            <button id="btn-part-3" class="btn primary-btn" style="margin-bottom:0;" disabled onclick="startSpecificPart(3)">دخول الجزء الثالث 🎯</button>
-                        </div>
+                        <button id="btn-part-1" class="btn primary-btn" style="margin-bottom:0;" onclick="startSpecificPart(1)">دخول الجزء الأول 🎯</button>
                     </div>
 
-                    <button id="finish-all-btn" class="btn secondary-btn" style="margin-top: 20px; display: none;" onclick="showNameRegistrationScreen()">
-                        الانتقال لإنهاء المسابقة وحفظ النتيجة 🏆
-                    </button>
+                    <div id="card-part-2" class="part-card locked">
+                        <div class="part-header">
+                            <span class="part-name">❓ الجزء الثاني: الخيارات المباشرة</span>
+                            <span id="badge-part-2" class="part-status-badge badge-locked">🔒 مغلق</span>
+                        </div>
+                        <div class="part-stats">
+                            <div class="stat-item">عدد الأسئلة: <b>10</b></div>
+                            <div class="stat-item">إجابات صحيحة: <b id="p2-correct">0 / 10</b></div>
+                            <div class="stat-item">النقاط: <b id="p2-points">0.0 / 15</b></div>
+                            <div class="stat-item">معدل الجزء: <b id="p2-rate">0%</b></div>
+                        </div>
+                        <button id="btn-part-2" class="btn primary-btn" style="margin-bottom:0;" disabled onclick="startSpecificPart(2)">دخول الجزء الثاني 🎯</button>
+                    </div>
+
+                    <div id="card-part-3" class="part-card locked">
+                        <div class="part-header">
+                            <span class="part-name">🧩 الجزء الثالث: الفوازير والألغاز</span>
+                            <span id="badge-part-3" class="part-status-badge badge-locked">🔒 مغلق</span>
+                        </div>
+                        <div class="part-stats">
+                            <div class="stat-item">عدد الأسئلة: <b>10</b></div>
+                            <div class="stat-item">إجابات صحيحة: <b id="p3-correct">0 / 10</b></div>
+                            <div class="stat-item">النقاط: <b id="p3-points">0.0 / 15</b></div>
+                            <div class="stat-item">معدل الجزء: <b id="p3-rate">0%</b></div>
+                        </div>
+                        <button id="btn-part-3" class="btn primary-btn" style="margin-bottom:0;" disabled onclick="startSpecificPart(3)">دخول الجزء الثالث 🎯</button>
+                    </div>
                 </div>
+
+                <button id="finish-all-btn" class="btn secondary-btn" style="margin-top: 20px; display: none; font-size: 1.25rem;" onclick="showNameRegistrationScreen()">
+                    الانتقال لإنهاء المسابقة وحفظ النتيجة 🏆
+                </button>
             </div>
 
             <!-- 4. شاشة الحظر -->
@@ -919,7 +948,7 @@
             { type: "text", weight: 2.0, part: 1, info: "ذُكر في المعراج أن النبي ﷺ التقى في السماء الرابعة بنبيٍ مكرَّم، وقد رُفع إلى هذا الموضع تكريمًا له، وكان من أوائل من كتبوا بالقلم وعُرف بكثرة عبادته وعلو منزلته عند الله.", question: "من هو هذا النبي الذي لقيه النبي ﷺ في السماء الرابعة؟", keywords: ["ادريس", "إدريس", "إدريس عليه السلام", "ادريس عليه السلام"], officialAnswer: "نبي الله إدريس عليه السلام." },
             { type: "text", weight: 2.0, part: 1, info: "قومٌ ذُكروا في القرآن وقع منهم تحايل على أمرٍ إلهي، فكانت عاقبتهم عبرةً باقية في الكتاب العزيز، حيث مُسخوا جزاءً لما فعلوه.", question: "من هم هذا القوم المذكورون في القرآن؟", keywords: ["اصحاب السبت", "أصحاب السبت", "أصحاب سبت", "اصحاب السبت"], officialAnswer: "أهل السبت." },
             { type: "text", weight: 2.0, part: 1, info: "مرّ رجلٌ على قريةٍ خربةٍ فقال متعجبًا: ﴿أَنَّىٰ يُحْيِي هَٰذِهِ اللَّهُ بَعْدَ مَوْتِهَا﴾ فأماته الله مئة عام ثم بعثه، وجعل أمامه دليلًا على إحياء الموتى أمام عينيه.", question: "من هو هذا الرجل المذكور في القصة؟", keywords: ["العزير", "عزير", "العزير عليه السلام"], officialAnswer: "العزير." },
-            { type: "text", weight: 2.0, part: 1, info: "ذكر الله تعالى في القرآن أن نبي الله سليمان طلب ممن حوله أن يأتيه بعرش ملكةٍ قبل وصولها إليه، فتقدّم رجلٌ آتاه الله علمًا عظيمًا، وقال إنه سيأتي بالعرش قبل أن يرتد إليه طرفه، فكان الأمر كذلك بإذن الله، فلما رآه مستقراً عنده قال: ﴿هَٰذَا مِنْ فَضْلِ رَبِّي لِيَبْلُوَنِي أَأَشْكُرُ أَمْ أَكْفُرُ﴾. وهذه القصة وردت في سورة النمل, الآيتين 38–40.", question: "من هو الرجل الذي أتى بعرش بلقيس في لمح البصر بإذن الله؟", keywords: ["اصف بن برخيا", "آصف بن برخيا", "اصف", "آصف"], officialAnswer: "آصف بن برخيا." },
+            { type: "text", weight: 2.0, part: 1, info: "ذكر الله تعالى في القرآن أن نبي الله سليمان طلب ممن حوله أن يأتيه بعرش ملكةٍ قبل وصوله إليه، فتقدّم رجلٌ آتاه الله علمًا عظيمًا، وقال إنه سيأتي بالعرش قبل أن يرتد إليه طرفه، فكان الأمر كذلك بإذن الله، فلما رآه مستقراً عنده قال: ﴿هَٰذَا مِنْ فَضْلِ رَبِّي لِيَبْلُوَنِي أَأَشْكُرُ أَمْ أَكْفُرُ﴾. وهذه القصة وردت في سورة النمل, الآيتين 38–40.", question: "من هو الرجل الذي أتى بعرش بلقيس في لمح البصر بإذن الله؟", keywords: ["اصف بن برخيا", "آصف بن برخيا", "اصف", "آصف"], officialAnswer: "آصف بن برخيا." },
             { type: "text", weight: 2.0, part: 1, info: "كان في أصحاب رسول الله ﷺ رجلٌ بلغ من الفضل والمنزلة عند الله أن أخبر النبي ﷺ أن عرش الرحمن اهتز عند وفاته، وهي من أعظم المناقب التي وردت في حق أحدٍ من الصحابة.", question: "من هو هذا الصحابي الجليل؟", keywords: ["سعد بن معاذ", "سعد بن معاذ رضي الله عنه", "سعد"], officialAnswer: "سعد بن معاذ رضي الله عنه." },
             { type: "text", weight: 2.0, part: 1, info: "يروي أهل السير والتاريخ أن المسلمين، أثناء الفتوحات الإسلامية في عهد عمر بن الخطاب، عثروا على جثمان نبيٍّ محفوظٍ لم يتغير، فاستشار قائد الجيش أمير المؤمنين، فأمر بدفنه سرًّا حتى لا يفتتن الناس به.", question: "من هو هذا النبي الذي دُفن في خلافة عمر بن الخطاب رضي الله عنه؟", keywords: ["دانيال", "دانيال عليه السلام", "نبي الله دانيال"], officialAnswer: "نبي الله دانيال عليه السلام." },
             { type: "text", weight: 2.0, part: 1, info: "يروي أهل الحديث أن قومًا من الأمم السابقة كذبوا نبيّهم واستكبروا عن دعوته، فابتلاهم الله بعذابٍ من السماء تمثل في ريحٍ شديدةٍ باردةٍ وصاخبة استمرت أيامًا متتابعة.", question: "ما اسم القوم الذين أهلكهم الله بهذه الرياح الشديدة؟", keywords: ["عاد", "قوم عاد"], officialAnswer: "قوم عاد." },
@@ -963,6 +992,7 @@
         let selectedOptionIdx = null; 
         let detailedResults = [];
 
+        // الهيكل الافتراضي لحالة الأجزاء (سيتم استرجاعها من localStorage)
         let partStatus = {
             1: { completed: false, correct: 0, points: 0.0, total: 15 },
             2: { completed: false, correct: 0, points: 0.0, total: 10 },
@@ -970,10 +1000,8 @@
         };
 
         let isQuizFinishedFinished = false; 
-        let isQuizStarted = false;
         let timerInterval = null;
         let isPdfDownloaded = false;
-        
         let antiCheatActive = false;
 
         window.onload = function() {
@@ -997,20 +1025,63 @@
                 return;
             }
 
+            // استرجاع التقدم المحفوظ من الكاش إن وجد
+            loadProgressFromCache();
+
             if (now < OPENING_DATE) {
                 document.getElementById("welcome-screen").style.display = "none";
                 document.getElementById("countdown-screen").style.display = "block";
                 document.getElementById("main-logo-header").style.display = "flex";
                 startCountdown();
             } else {
-                showWelcomeScreen();
+                // التحقق هل وافد جديد ولم يشاهد الشروط، أم أنه وافق عليها مسبقاً
+                const rulesAccepted = localStorage.getItem("rules_accepted_2026");
+                if (!rulesAccepted) {
+                    document.getElementById("countdown-screen").style.display = "none";
+                    document.getElementById("welcome-screen").style.display = "block";
+                    document.getElementById("main-logo-header").style.display = "flex";
+                } else {
+                    // إذا وافق مسبقاً، اذهب مباشرة إلى لوحة الأجزاء
+                    goToDashboard();
+                }
             }
         };
 
-        function showWelcomeScreen() {
-            document.getElementById("countdown-screen").style.display = "none";
-            document.getElementById("welcome-screen").style.display = "block";
-            document.getElementById("main-logo-header").style.display = "flex";
+        function loadProgressFromCache() {
+            const savedStatus = localStorage.getItem("quiz_parts_status_2026");
+            const savedPoints = localStorage.getItem("quiz_cumulative_points_2026");
+            const savedCorrect = localStorage.getItem("quiz_score_correct_2026");
+            const savedWrong = localStorage.getItem("quiz_score_wrong_2026");
+            const savedDetails = localStorage.getItem("quiz_detailed_results_2026");
+
+            if (savedStatus) {
+                partStatus = JSON.parse(savedStatus);
+            }
+            if (savedPoints) {
+                cumulativePoints = parseFloat(savedPoints);
+            }
+            if (savedCorrect) {
+                scoreCorrect = parseInt(savedCorrect);
+            }
+            if (savedWrong) {
+                scoreWrong = parseInt(savedWrong);
+            }
+            if (savedDetails) {
+                detailedResults = JSON.parse(savedDetails);
+            }
+        }
+
+        function saveProgressToCache() {
+            localStorage.setItem("quiz_parts_status_2026", JSON.stringify(partStatus));
+            localStorage.setItem("quiz_cumulative_points_2026", cumulativePoints);
+            localStorage.setItem("quiz_score_correct_2026", scoreCorrect);
+            localStorage.setItem("quiz_score_wrong_2026", scoreWrong);
+            localStorage.setItem("quiz_detailed_results_2026", JSON.stringify(detailedResults));
+        }
+
+        function acceptRulesAndProceed() {
+            localStorage.setItem("rules_accepted_2026", "true");
+            goToDashboard();
         }
 
         function startCountdown() {
@@ -1021,7 +1092,14 @@
 
                 if (distance <= 0) {
                     clearInterval(timerInterval);
-                    showWelcomeScreen();
+                    const rulesAccepted = localStorage.getItem("rules_accepted_2026");
+                    if (!rulesAccepted) {
+                        document.getElementById("countdown-screen").style.display = "none";
+                        document.getElementById("welcome-screen").style.display = "block";
+                        document.getElementById("main-logo-header").style.display = "flex";
+                    } else {
+                        goToDashboard();
+                    }
                 } else {
                     updateTimerValues();
                 }
@@ -1045,9 +1123,12 @@
         }
 
         function goToDashboard() {
-            isQuizStarted = true;
             document.getElementById("welcome-screen").style.display = "none";
+            document.getElementById("countdown-screen").style.display = "none";
             document.getElementById("quiz-screen").style.display = "none";
+            document.getElementById("name-screen").style.display = "none";
+            document.getElementById("result-screen").style.display = "none";
+            
             document.getElementById("parts-dashboard").style.display = "block";
             document.getElementById("main-logo-header").style.display = "flex";
             
@@ -1068,6 +1149,7 @@
                 document.getElementById("badge-part-1").className = "part-status-badge badge-available";
                 document.getElementById("badge-part-1").innerText = "متاح للبدء";
                 document.getElementById("btn-part-1").disabled = false;
+                document.getElementById("btn-part-1").innerText = "دخول الجزء الأول 🎯";
             }
             document.getElementById("p1-correct").innerText = `${partStatus[1].correct} / 15`;
             document.getElementById("p1-points").innerText = `${partStatus[1].points.toFixed(1)} / 30`;
@@ -1126,12 +1208,13 @@
 
             if (partStatus[1].completed && partStatus[2].completed && partStatus[3].completed) {
                 document.getElementById("finish-all-btn").style.display = "block";
+            } else {
+                document.getElementById("finish-all-btn").style.display = "none";
             }
         }
 
         function startSpecificPart(pNum) {
             if (partStatus[pNum].completed) return;
-            // تحقق تسلسلي إضافي للحماية
             if (pNum === 2 && !partStatus[1].completed) return;
             if (pNum === 3 && !partStatus[2].completed) return;
 
@@ -1145,7 +1228,6 @@
             document.getElementById("parts-dashboard").style.display = "none";
             document.getElementById("quiz-screen").style.display = "block";
 
-            // تفعيل نظام الحماية حصرياً داخل الأسئلة
             antiCheatActive = true;
             loadCurrentPartQuestion();
         }
@@ -1311,14 +1393,13 @@
             } else {
                 actionBtn.innerText = "إتمام الجزء والعودة للواجهة الرئيسة 🏁";
                 actionBtn.onclick = function() {
-                    // إيقاف نظام الحماية مؤقتاً عند العودة لصفحة الأجزاء
                     antiCheatActive = false;
                     partStatus[activePart].completed = true;
-                    document.getElementById("quiz-screen").style.display = "none";
-                    document.getElementById("parts-dashboard").style.display = "block";
-                    document.getElementById("main-logo-header").style.display = "flex";
-                    document.getElementById("part-tag").innerText = "أجزاء المسابقة الكبرى";
-                    updateDashboardUI();
+                    
+                    // حفظ التقدم مباشرة في الكاش
+                    saveProgressToCache();
+
+                    goToDashboard();
                 };
             }
         }
