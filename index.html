@@ -686,7 +686,7 @@
                         🗺️ أجزاء المسابقة الكبرى
                     </div>
                     <p class="card-text" style="font-size: 1.05rem; text-align: center;">
-                        اختر الجزء للبدء. يجب إنهاء الأجزاء بالترتيب، ولا يمكن إعادة الجزء بعد إتمامه.
+                        أتمم الأجزاء بالترتيب التسلسلي. يفتح كل جزء تلقائياً بعد إتمام الجزء السابق بنجاح.
                     </p>
 
                     <div class="parts-grid">
@@ -973,6 +973,8 @@
         let isQuizStarted = false;
         let timerInterval = null;
         let isPdfDownloaded = false;
+        
+        let antiCheatActive = false;
 
         window.onload = function() {
             const now = new Date().getTime();
@@ -991,7 +993,7 @@
                 triggerBlockView("عذراً! لقد قمت بالإجابة على هذه المسابقة الكبرى مسبقاً ولا يمكنك الإعادة.");
                 return;
             } else if (localStorage.getItem("quiz_grand_disqualified_2026") === "true") {
-                triggerBlockView("أنت مقصي تماماً من هذه المسابقة بسبب محاولة الغش أو مغادرة نطاق الصفحة!");
+                triggerBlockView("أنت مقصي تماماً من هذه المسابقة بسبب محاولة الغش أو مغادرة نطاق الأسئلة!");
                 return;
             }
 
@@ -1051,50 +1053,71 @@
             
             document.getElementById("part-tag").innerText = "أجزاء المسابقة الكبرى";
             updateDashboardUI();
-            startAntiCheatMonitor();
         }
 
         function updateDashboardUI() {
+            // الجزء الأول
             if (partStatus[1].completed) {
                 document.getElementById("card-part-1").className = "part-card completed";
                 document.getElementById("badge-part-1").className = "part-status-badge badge-completed";
-                document.getElementById("badge-part-1").innerText = "✓ مكتمل (مغلق)";
+                document.getElementById("badge-part-1").innerText = "✓ مكتمل";
                 document.getElementById("btn-part-1").innerText = "🔒 تم إكمال الجزء الأول";
                 document.getElementById("btn-part-1").disabled = true;
+            } else {
+                document.getElementById("card-part-1").className = "part-card";
+                document.getElementById("badge-part-1").className = "part-status-badge badge-available";
+                document.getElementById("badge-part-1").innerText = "متاح للبدء";
+                document.getElementById("btn-part-1").disabled = false;
             }
             document.getElementById("p1-correct").innerText = `${partStatus[1].correct} / 15`;
             document.getElementById("p1-points").innerText = `${partStatus[1].points.toFixed(1)} / 30`;
             let rate1 = (partStatus[1].correct / 15) * 100;
             document.getElementById("p1-rate").innerText = `${rate1.toFixed(1)}%`;
 
+            // الجزء الثاني (يفتح فقط إذا اكتمل الأول)
             if (partStatus[1].completed && !partStatus[2].completed) {
                 document.getElementById("card-part-2").className = "part-card";
                 document.getElementById("badge-part-2").className = "part-status-badge badge-available";
                 document.getElementById("badge-part-2").innerText = "متاح للبدء";
                 document.getElementById("btn-part-2").disabled = false;
+                document.getElementById("btn-part-2").innerText = "دخول الجزء الثاني 🎯";
             } else if (partStatus[2].completed) {
                 document.getElementById("card-part-2").className = "part-card completed";
                 document.getElementById("badge-part-2").className = "part-status-badge badge-completed";
-                document.getElementById("badge-part-2").innerText = "✓ مكتمل (مغلق)";
+                document.getElementById("badge-part-2").innerText = "✓ مكتمل";
                 document.getElementById("btn-part-2").innerText = "🔒 تم إكمال الجزء الثاني";
                 document.getElementById("btn-part-2").disabled = true;
+            } else {
+                document.getElementById("card-part-2").className = "part-card locked";
+                document.getElementById("badge-part-2").className = "part-status-badge badge-locked";
+                document.getElementById("badge-part-2").innerText = "🔒 مغلق";
+                document.getElementById("btn-part-2").disabled = true;
+                document.getElementById("btn-part-2").innerText = "دخول الجزء الثاني 🎯";
             }
             document.getElementById("p2-correct").innerText = `${partStatus[2].correct} / 10`;
             document.getElementById("p2-points").innerText = `${partStatus[2].points.toFixed(1)} / 15`;
             let rate2 = (partStatus[2].correct / 10) * 100;
             document.getElementById("p2-rate").innerText = `${rate2.toFixed(1)}%`;
 
+            // الجزء الثالث (يفتح فقط إذا اكتمل الثاني)
             if (partStatus[2].completed && !partStatus[3].completed) {
                 document.getElementById("card-part-3").className = "part-card";
                 document.getElementById("badge-part-3").className = "part-status-badge badge-available";
                 document.getElementById("badge-part-3").innerText = "متاح للبدء";
                 document.getElementById("btn-part-3").disabled = false;
+                document.getElementById("btn-part-3").innerText = "دخول الجزء الثالث 🎯";
             } else if (partStatus[3].completed) {
                 document.getElementById("card-part-3").className = "part-card completed";
                 document.getElementById("badge-part-3").className = "part-status-badge badge-completed";
-                document.getElementById("badge-part-3").innerText = "✓ مكتمل (مغلق)";
+                document.getElementById("badge-part-3").innerText = "✓ مكتمل";
                 document.getElementById("btn-part-3").innerText = "🔒 تم إكمال الجزء الثالث";
                 document.getElementById("btn-part-3").disabled = true;
+            } else {
+                document.getElementById("card-part-3").className = "part-card locked";
+                document.getElementById("badge-part-3").className = "part-status-badge badge-locked";
+                document.getElementById("badge-part-3").innerText = "🔒 مغلق";
+                document.getElementById("btn-part-3").disabled = true;
+                document.getElementById("btn-part-3").innerText = "دخول الجزء الثالث 🎯";
             }
             document.getElementById("p3-correct").innerText = `${partStatus[3].correct} / 10`;
             document.getElementById("p3-points").innerText = `${partStatus[3].points.toFixed(1)} / 15`;
@@ -1108,6 +1131,9 @@
 
         function startSpecificPart(pNum) {
             if (partStatus[pNum].completed) return;
+            // تحقق تسلسلي إضافي للحماية
+            if (pNum === 2 && !partStatus[1].completed) return;
+            if (pNum === 3 && !partStatus[2].completed) return;
 
             activePart = pNum;
             activeQuestionsIndices = [];
@@ -1119,6 +1145,8 @@
             document.getElementById("parts-dashboard").style.display = "none";
             document.getElementById("quiz-screen").style.display = "block";
 
+            // تفعيل نظام الحماية حصرياً داخل الأسئلة
+            antiCheatActive = true;
             loadCurrentPartQuestion();
         }
 
@@ -1139,8 +1167,6 @@
                 narrativeCard.style.display = "block";
                 document.getElementById("info-title").innerText = `📖 السند رقم ${currentQuestionInPartPos + 1} من 15`;
                 document.getElementById("info-body").innerText = currentData.info;
-            } else if (activePart === 2) {
-                narrativeCard.style.display = "none";
             } else {
                 narrativeCard.style.display = "none";
             }
@@ -1285,6 +1311,8 @@
             } else {
                 actionBtn.innerText = "إتمام الجزء والعودة للواجهة الرئيسة 🏁";
                 actionBtn.onclick = function() {
+                    // إيقاف نظام الحماية مؤقتاً عند العودة لصفحة الأجزاء
+                    antiCheatActive = false;
                     partStatus[activePart].completed = true;
                     document.getElementById("quiz-screen").style.display = "none";
                     document.getElementById("parts-dashboard").style.display = "block";
@@ -1299,21 +1327,26 @@
             document.getElementById("reveal-text").style.display = "block";
         }
 
-        function startAntiCheatMonitor() {
-            document.addEventListener("visibilitychange", function() {
-                if (document.hidden && !isQuizFinishedFinished && isQuizStarted) disqualifyUserAction();
-            });
-            window.addEventListener("blur", function() {
-                if (!isQuizFinishedFinished && isQuizStarted) disqualifyUserAction();
-            });
-        }
+        // مستشعرات الحماية نشطة فقط أثناء خوض الأسئلة
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden && antiCheatActive && !isQuizFinishedFinished) {
+                disqualifyUserAction();
+            }
+        });
+
+        window.addEventListener("blur", function() {
+            if (antiCheatActive && !isQuizFinishedFinished) {
+                disqualifyUserAction();
+            }
+        });
 
         function disqualifyUserAction() {
             localStorage.setItem("quiz_grand_disqualified_2026", "true");
-            triggerBlockView("أنت مقصي تماماً من هذه المسابقة لأنك خرجت من نطاق الموقع أو قمت بمغادرة الصفحة!");
+            triggerBlockView("أنت مقصي تماماً من هذه المسابقة لأنك قمت بمغادرة نطاق صفحة الأسئلة!");
         }
 
         function triggerBlockView(message) {
+            antiCheatActive = false;
             document.getElementById("welcome-screen").style.display = "none";
             document.getElementById("countdown-screen").style.display = "none";
             document.getElementById("parts-dashboard").style.display = "none";
@@ -1326,6 +1359,7 @@
         }
 
         function showNameRegistrationScreen() {
+            antiCheatActive = false;
             document.getElementById("parts-dashboard").style.display = "none";
             document.getElementById("name-screen").style.display = "block";
             document.getElementById("main-logo-header").style.display = "flex";
